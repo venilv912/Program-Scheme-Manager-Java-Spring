@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Scheme</title>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Add Scheme</h2>
+    <form th:action="@{/scheme/save}" th:object="${scheme}" method="post">
+        <!-- Primary Key -->
+        <div class="mb-3">
+            <label>Scheme ID</label>
+            <input type="number" th:field="*{id}" class="form-control" required>
+        </div>
+
+        <!-- Hidden input for program_id -->
+        <input type="hidden" th:field="*{program.id}" />
+
+        <div class="mb-3">
+            <label>Effective From Year</label>
+            <input type="number" th:field="*{effectiveFromYear}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Max Credit Load</label>
+            <input type="number" th:field="*{maxCreditLoad}" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label>Max Courses</label>
+            <input type="number" th:field="*{maxCourses}" class="form-control">
+        </div>
+
+        <div class="mb-3">
+            <label>Min CPI</label>
+            <input type="number" step="0.01" th:field="*{minCpi}" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Min Credits</label>
+            <input type="number" th:field="*{minCredits}" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a th:href="@{/program/{id}(id=${scheme.program.id})}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+</body>
+</html>
