@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add Course Requirement</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Add Course Requirement</h2>
+
+    <form th:action="@{/program/{programId}/scheme/{schemeId}/courserequirements/save(programId=${programId}, schemeId=${schemeId})}"
+          th:object="${requirement}" method="post">
+
+        <div class="mb-3">
+            <label class="form-label">Course Type Code</label>
+            <select class="form-select" th:field="*{courseTypeCode}" required>
+                <option th:each="type : ${courseTypes}"
+                        th:value="${type.courseTypeCode}"
+                        th:text="${type.courseTypeName}">Course Type</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Min Courses</label>
+            <input type="number" class="form-control" th:field="*{minCourse}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Max Courses</label>
+            <input type="number" class="form-control" th:field="*{maxCourse}"/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Min Credits</label>
+            <input type="number" class="form-control" th:field="*{minCredits}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Max Credits</label>
+            <input type="number" class="form-control" th:field="*{maxCredits}"/>
+        </div>
+
+        <!-- Hidden fields -->
+        <input type="hidden" th:field="*{schemeId}"/>
+        <input type="hidden" th:field="*{programId}"/>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a class="btn btn-secondary" th:href="@{/program/{programId}/scheme/{schemeId}/courserequirements(programId=${programId}, schemeId=${schemeId})}">Cancel</a>
+    </form>
+</div>
+</body>
+</html>
