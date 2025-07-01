@@ -35,6 +35,7 @@ public class ProgramController {
     @GetMapping("/program/add")
     public String showAddForm(Model model) {
         model.addAttribute("program", new Programs());
+        model.addAttribute("editing", false);
         return "program_form";
     }
 
@@ -52,10 +53,22 @@ public class ProgramController {
         if (program.isEmpty()) {
             return "redirect:/dashboard";
         }
-
         List<Scheme> schemes = schemeRepository.findByProgramId(programId);
         model.addAttribute("program", program.get());
         model.addAttribute("schemes", schemes);
         return "program_schemes";
+    }
+    @GetMapping("/program/edit/{id}")
+    public String showEditForm(@PathVariable("id") short id, Model model) {
+        Programs program = programRepository.findById(id).orElseThrow();
+        model.addAttribute("program", program);
+        model.addAttribute("editing", true);
+        return "program_form";
+    }
+
+    @GetMapping("/program/delete/{id}")
+    public String deleteProgram(@PathVariable("id") short id) {
+        programRepository.deleteById(id);
+        return "redirect:/dashboard";
     }
 }

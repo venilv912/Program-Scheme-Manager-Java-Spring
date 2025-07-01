@@ -32,6 +32,7 @@ public class SchemeController {
         Scheme scheme = new Scheme();
         scheme.setProgram(program.get());
         model.addAttribute("scheme", scheme);
+        model.addAttribute("editing", false);
         return "scheme_form";
     }
 
@@ -41,4 +42,34 @@ public class SchemeController {
         schemeRepository.save(scheme);
         return "redirect:/program/" + scheme.getProgram().getId();
     }
+    @GetMapping("/program/{programId}/scheme/{schemeId}/details")
+    public String viewSchemeDetails(@PathVariable int programId,
+                                    @PathVariable int schemeId,
+                                    Model model) {
+        Scheme scheme = schemeRepository.findById(schemeId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid scheme ID"));
+        model.addAttribute("scheme", scheme);
+        model.addAttribute("programId", programId);
+        return "scheme_details";
+    }
+
+    @GetMapping("/program/{programId}/scheme/{schemeId}/delete")
+    public String deleteScheme(@PathVariable int programId,
+                               @PathVariable int schemeId) {
+        schemeRepository.deleteById(schemeId);
+        return "redirect:/program/" + programId;
+    }
+    @GetMapping("/program/{programId}/scheme/{schemeId}/edit")
+    public String showEditSchemeForm(@PathVariable("programId") short programId,
+                                     @PathVariable("schemeId") int schemeId,
+                                     Model model) {
+        Scheme scheme = schemeRepository.findById(schemeId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid scheme ID"));
+
+        model.addAttribute("scheme", scheme);
+        model.addAttribute("editing", true);
+        return "scheme_form";
+    }
+
+
 }

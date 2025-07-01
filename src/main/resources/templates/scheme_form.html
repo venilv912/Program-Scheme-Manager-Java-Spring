@@ -12,7 +12,8 @@
         <!-- Primary Key -->
         <div class="mb-3">
             <label>Scheme ID</label>
-            <input type="number" th:field="*{id}" class="form-control" required>
+            <input type="number" th:field="*{id}"  th:readonly="${editing}"
+                   th:classappend="${editing} ? ' bg-light' : ''" class="form-control" required >
         </div>
 
         <!-- Hidden input for program_id -->
@@ -20,7 +21,8 @@
 
         <div class="mb-3">
             <label>Effective From Year</label>
-            <input type="number" th:field="*{effectiveFromYear}" class="form-control" required>
+            <input type="number" th:field="*{effectiveFromYear}"  th:readonly="${editing}"
+                   th:classappend="${editing} ? ' bg-light' : ''" class="form-control" required>
         </div>
 
         <div class="mb-3">
