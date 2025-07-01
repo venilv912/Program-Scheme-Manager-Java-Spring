@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Semester Courses</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Semester Courses for Scheme ID: <span th:text="${schemeId}"></span></h2>
+
+    <div th:each="entry : ${groupedCourses}">
+        <h4 class="mt-4">Semester <span th:text="${entry.key}"></span></h4>
+
+        <table class="table table-bordered mt-2">
+            <thead class="table-light">
+            <tr>
+                <th>Course Sr No</th>
+                <th>Course Code</th>
+                <th>Course Title</th>
+                <th>Course Type</th>
+                <th>Lecture Hours</th>
+                <th>Tutorial Hours</th>
+                <th>Practical Hours</th>
+                <th>Total Credits</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="course : ${entry.value}">
+                <td th:text="${course.courseSrNo}">1</td>
+                <td th:text="${course.courseCode}">CS101</td>
+                <td th:text="${course.courseTitle}">Intro to CS</td>
+                <td th:text="${course.courseTypeCode}">TH</td>
+                <td th:text="${course.lectureHours}">3</td>
+                <td th:text="${course.tutorialHours}">1</td>
+                <td th:text="${course.practicalHours}">2</td>
+                <td th:text="${course.totalCredits}">5</td>
+                <td class="d-flex gap-2">
+                    <a class="btn btn-sm btn-warning"
+                       th:href="@{/program/{programId}/scheme/{schemeId}/semestercourses/edit(
+                                programId=${programId},
+                                schemeId=${schemeId},
+                                semNo=${course.semNo},
+                                courseSrNo=${course.courseSrNo})}">
+                        ✏️ Edit
+                    </a>
+                    <a class="btn btn-sm btn-danger"
+                       th:href="@{/program/{programId}/scheme/{schemeId}/semestercourses/delete(
+                                programId=${programId},
+                                schemeId=${schemeId},
+                                semNo=${course.semNo},
+                                courseSrNo=${course.courseSrNo})}"
+                       onclick="return confirm('Are you sure you want to delete this course?');">
+                        🗑 Delete
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <a class="btn btn-success btn-sm mb-3"
+           th:href="@{/program/{programId}/scheme/{schemeId}/semestercourses/add(
+                        programId=${programId}, schemeId=${schemeId}, semNo=${entry.key})}">
+            ➕ Add Course to Semester <span th:text="${entry.key}"></span>
+        </a>
+    </div>
+
+    <a class="btn btn-secondary mt-4" th:href="@{/program/{programId}(programId=${programId})}">
+        ← Back to Schemes
+    </a>
+</div>
+</body>
+</html>

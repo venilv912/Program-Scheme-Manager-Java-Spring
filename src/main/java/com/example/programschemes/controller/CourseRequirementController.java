@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/program/{programId}/scheme/{schemeId}/courserequirements")
@@ -41,21 +42,31 @@ public class CourseRequirementController {
                               @PathVariable int schemeId,
                               Model model) {
 
-        //System.out.println("=== Received programId: " + programId + ", schemeId: " + schemeId);
-
         CourseRequirement cr = new CourseRequirement();
         cr.setSchemeId(schemeId);
         cr.setProgramId((short) programId);
 
-        List<CourseType> courseTypes = courseTypeRepository.findByProgramId((short) programId);
+        // Step 1: All course types for this program
+        List<CourseType> allCourseTypes = courseTypeRepository.findByProgramId((short) programId);
 
-        // Print courseTypes to confirm filtering
-       // System.out.println("=== Fetched courseTypes count: " + courseTypes.size());
+        // Step 2: Already used course type codes in requirements
+        List<String> usedCodes = courseRequirementRepository
+                .findByProgramIdAndSchemeId((short) programId, schemeId)
+                .stream()
+                .map(CourseRequirement::getCourseTypeCode)
+                .collect(Collectors.toList());
+
+        // Step 3: Filter out used course types
+        List<CourseType> availableTypes = allCourseTypes.stream()
+                .filter(type -> !usedCodes.contains(type.getCourseTypeCode()))
+                .collect(Collectors.toList());
 
         model.addAttribute("requirement", cr);
-        model.addAttribute("courseTypes", courseTypes);
+        model.addAttribute("courseTypes", availableTypes);
         model.addAttribute("programId", programId);
         model.addAttribute("schemeId", schemeId);
+        model.addAttribute("editing", false);
+
         return "course_requirement_form";
     }
 
@@ -66,17 +77,53 @@ public class CourseRequirementController {
         courseRequirementRepository.save(cr);
         return "redirect:/program/" + cr.getProgramId() + "/scheme/" + cr.getSchemeId() + "/courserequirements";
     }
-    @PostMapping("/delete-selected")
-    public String deleteSelected(@PathVariable int programId,
-                                 @PathVariable int schemeId,
-                                 @RequestParam("selected") List<String> selectedCodes) {
 
-        for (String code : selectedCodes) {
-            CourseRequirementId id = new CourseRequirementId(schemeId, code);
-            courseRequirementRepository.deleteById(id);
-        }
+    // Edit existing requirement
+    @GetMapping("/edit")
+    public String showEditForm(@PathVariable int programId,
+                               @PathVariable int schemeId,
+                               @RequestParam("courseTypeCode") String courseTypeCode,
+                               Model model) {
+
+        CourseRequirement existing = courseRequirementRepository
+                .findBySchemeIdAndCourseTypeCode(schemeId, courseTypeCode);
+
+        // Step 1: All course types for the program
+        List<CourseType> allCourseTypes = courseTypeRepository.findByProgramId((short) programId);
+
+        // Step 2: Get used courseTypeCodes for this (programId, schemeId)
+        List<String> usedCodes = courseRequirementRepository
+                .findByProgramIdAndSchemeId((short) programId, schemeId)
+                .stream()
+                .map(CourseRequirement::getCourseTypeCode)
+                .collect(Collectors.toList());
+
+        // Step 3: Remove used codes except the current one being edited
+        List<CourseType> availableTypes = allCourseTypes.stream()
+                .filter(type ->
+                        !usedCodes.contains(type.getCourseTypeCode()) ||
+                                type.getCourseTypeCode().equals(courseTypeCode)
+                )
+                .collect(Collectors.toList());
+
+        model.addAttribute("requirement", existing);
+        model.addAttribute("courseTypes", availableTypes);
+        model.addAttribute("programId", programId);
+        model.addAttribute("schemeId", schemeId);
+        model.addAttribute("editing", true);  // Useful for conditionally disabling dropdown
+        return "course_requirement_form";
+    }
+
+
+    // Delete single requirement
+    @GetMapping("/delete")
+    public String deleteRequirement(@PathVariable int programId,
+                                    @PathVariable int schemeId,
+                                    @RequestParam("courseTypeCode") String courseTypeCode) {
+
+        CourseRequirementId id = new CourseRequirementId(schemeId, courseTypeCode);
+        courseRequirementRepository.deleteById(id);
 
         return "redirect:/program/" + programId + "/scheme/" + schemeId + "/courserequirements";
     }
-
 }

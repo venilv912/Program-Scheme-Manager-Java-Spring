@@ -8,49 +8,46 @@
 <div class="container mt-5">
     <h2>Course Requirements for Scheme ID: <span th:text="${schemeId}"></span></h2>
 
-    <form th:action="@{/program/{programId}/scheme/{schemeId}/courserequirements/delete-selected(programId=${programId}, schemeId=${schemeId})}" method="post">
-        <table class="table table-bordered mt-3">
-            <thead class="table-light">
-            <tr>
-                <th>Select</th>
-                <th>Course Type Code</th>
-                <th>Min Courses</th>
-                <th>Max Courses</th>
-                <th>Min Credits</th>
-                <th>Max Credits</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="req : ${requirements}">
-                <td>
-                    <input type="checkbox" name="selected" th:value="${req.courseTypeCode}" />
-                </td>
-                <td th:text="${req.courseTypeCode}">CT</td>
-                <td th:text="${req.minCourse}">0</td>
-                <td th:text="${req.maxCourse}">0</td>
-                <td th:text="${req.minCredits}">0</td>
-                <td th:text="${req.maxCredits}">0</td>
-            </tr>
-            </tbody>
-        </table>
+    <table class="table table-bordered mt-3">
+        <thead class="table-light">
+        <tr>
+            <th>Course Type Code</th>
+            <th>Min Courses</th>
+            <th>Max Courses</th>
+            <th>Min Credits</th>
+            <th>Max Credits</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="req : ${requirements}">
+            <td th:text="${req.courseTypeCode}">CT</td>
+            <td th:text="${req.minCourse}">0</td>
+            <td th:text="${req.maxCourse}">0</td>
+            <td th:text="${req.minCredits}">0</td>
+            <td th:text="${req.maxCredits}">0</td>
+            <td class="d-flex gap-2">
+                <a class="btn btn-sm btn-warning"
+                   th:href="@{/program/{programId}/scheme/{schemeId}/courserequirements/edit(programId=${programId}, schemeId=${schemeId}, courseTypeCode=${req.courseTypeCode})}">
+                    ✏️ Edit
+                </a>
+                <a class="btn btn-sm btn-danger"
+                   th:href="@{/program/{programId}/scheme/{schemeId}/courserequirements/delete(programId=${programId}, schemeId=${schemeId}, courseTypeCode=${req.courseTypeCode})}"
+                   onclick="return confirm('Are you sure you want to delete this requirement?');">
+                    🗑 Delete
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
-        <!-- Hidden fields -->
-        <input type="hidden" name="schemeId" th:value="${schemeId}" />
-        <input type="hidden" name="programId" th:value="${programId}" />
-
-        <div class="d-flex gap-2">
-            <a class="btn btn-success"
-               th:href="@{/program/{programId}/scheme/{schemeId}/courserequirements/add(programId=${programId}, schemeId=${schemeId})}">
-                ➕ Add/Edit Requirement
-            </a>
-
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete the selected requirements?')">
-                🗑 Delete Selected
-            </button>
-
-            <a class="btn btn-secondary" th:href="@{/dashboard}">← Back to Dashboard</a>
-        </div>
-    </form>
+    <div class="d-flex gap-2">
+        <a class="btn btn-success"
+           th:href="@{/program/{programId}/scheme/{schemeId}/courserequirements/add(programId=${programId}, schemeId=${schemeId})}">
+            ➕ Add Requirement
+        </a>
+        <a class="btn btn-secondary" th:href="@{/program/{programId}(programId=${programId})}">← Back to Schemes</a>
+    </div>
 </div>
 </body>
 </html>

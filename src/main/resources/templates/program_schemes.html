@@ -23,12 +23,13 @@
                             <div class="col">
                                 <a class="btn btn-outline-primary w-100"
                                    th:href="@{'/program/' + ${program.id} + '/scheme/' + ${scheme.id} + '/courserequirements'}">
-                                    📚 Course Requirements
+                                    📚 Course<br>Requirements
                                 </a>
                             </div>
                             <div class="col">
-                                <a class="btn btn-outline-secondary w-100" href="#">
-                                    📆 Semester Courses
+                                <a class="btn btn-outline-secondary w-100"
+                                   th:href="@{/program/{programId}/scheme/{schemeId}/semestercourses(programId=${program.id}, schemeId=${scheme.id})}">
+                                📆 Semester<br>Courses
                                 </a>
                             </div>
                         </div>
@@ -45,6 +46,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="mt-4">
+        <a class="btn btn-secondary" th:href="@{/dashboard}">← Back to Dashboard</a>
     </div>
 </div>
 </body>

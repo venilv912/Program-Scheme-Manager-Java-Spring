@@ -13,4 +13,6 @@ public interface CourseRequirementRepository extends JpaRepository<CourseRequire
 
     // Optionally: Find by scheme + course type
     CourseRequirement findBySchemeIdAndCourseTypeCode(int schemeId, String courseTypeCode);
+
+    List<CourseRequirement> findByProgramIdAndSchemeId(short programId, int schemeId);
 }

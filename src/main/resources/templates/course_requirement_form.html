@@ -11,12 +11,30 @@
     <form th:action="@{/program/{programId}/scheme/{schemeId}/courserequirements/save(programId=${programId}, schemeId=${schemeId})}"
           th:object="${requirement}" method="post">
 
-        <div class="mb-3">
+        <!-- Show as dropdown only in add mode -->
+        <div class="mb-3" th:if="${!editing}">
             <label class="form-label">Course Type Code</label>
             <select class="form-select" th:field="*{courseTypeCode}" required>
                 <option th:each="type : ${courseTypes}"
                         th:value="${type.courseTypeCode}"
                         th:text="${type.courseTypeName}">Course Type</option>
+            </select>
+        </div>
+
+        <!-- Show as read-only field + hidden input in edit mode -->
+        <div class="mb-3" th:if="${editing}">
+            <label class="form-label">Course Type Code</label>
+
+            <!-- Hidden input to preserve value for submission -->
+            <input type="hidden" th:field="*{courseTypeCode}" />
+
+            <!-- Disabled dropdown -->
+            <select class="form-select" disabled>
+                <option th:each="type : ${courseTypes}"
+                        th:value="${type.courseTypeCode}"
+                        th:text="${type.courseTypeName}"
+                        th:selected="${type.courseTypeCode == requirement.courseTypeCode}">
+                </option>
             </select>
         </div>
 
