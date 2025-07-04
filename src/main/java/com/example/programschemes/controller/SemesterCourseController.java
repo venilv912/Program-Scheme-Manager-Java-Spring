@@ -38,22 +38,27 @@ public class SemesterCourseController {
                                       Model model) {
         List<SemesterCourse> courses = semesterCourseRepository.findBySchemeId(schemeId);
 
-    // Group by semNo
-            Map<Integer, List<SemesterCourse>> groupedCourses = new HashMap<>();
-            courses.forEach(course -> {
-                groupedCourses.computeIfAbsent(course.getSemNo(), k -> new ArrayList<>()).add(course);
-            });
+        // Group by semNo AND sort each group by courseSrNo
+        Map<Integer, List<SemesterCourse>> groupedCourses = new HashMap<>();
+        for (SemesterCourse course : courses) {
+            groupedCourses.computeIfAbsent(course.getSemNo(), k -> new ArrayList<>()).add(course);
+        }
 
-    // Ensure all semesters up to duration exist
-            int duration = programRepository.findById(programId).get().getDuration();
-            for (int sem = 1; sem <= duration; sem++) {
-                groupedCourses.putIfAbsent(sem, new ArrayList<>());
-            }
+        // Sort each list by courseSrNo
+        for (List<SemesterCourse> courseList : groupedCourses.values()) {
+            courseList.sort(Comparator.comparingInt(SemesterCourse::getCourseSrNo));
+        }
 
-        model.addAttribute("groupedCourses", groupedCourses);  // <-- add this
+        // Ensure all semesters up to duration exist
+        int duration = programRepository.findById(programId).get().getDuration();
+        for (int sem = 1; sem <= duration; sem++) {
+            groupedCourses.putIfAbsent(sem, new ArrayList<>());
+        }
+
+        model.addAttribute("groupedCourses", groupedCourses);
         model.addAttribute("programId", programId);
         model.addAttribute("schemeId", schemeId);
-        return "semester_courses";  // View name
+        return "semester_courses";
     }
 
     @GetMapping("/add")

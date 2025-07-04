@@ -49,6 +49,8 @@
             ✏️ Edit Scheme
         </a>
         <a class="btn btn-secondary" th:href="@{/program/{programId}(programId=${programId})}">← Back to Schemes</a>
+        <a class="btn btn-secondary" th:href="@{/program/{programId}/scheme/{schemeId}/courserequirements(programId=${programId}, schemeId=${scheme.id})}">-> Go to Course Requirement</a>
+        <a class="btn btn-secondary" th:href="@{/program/{programId}/scheme/{schemeId}/semestercourses(programId=${programId}, schemeId=${schemeId})}">-> Go to Semester Courses</a>
     </div>
 
 </div>
