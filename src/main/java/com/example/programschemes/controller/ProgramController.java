@@ -6,10 +6,8 @@ import com.example.programschemes.repository.ProgramRepository;
 import com.example.programschemes.repository.SchemeRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -40,9 +38,18 @@ public class ProgramController {
     }
 
     @PostMapping("/program/save")
-    public String saveProgram(@ModelAttribute("program") Programs program) {
+    public String saveProgram(@ModelAttribute("program") Programs program,
+                              @RequestParam("editing") boolean editing,
+                              RedirectAttributes redirectAttributes) {
+
+        if (!editing && programRepository.existsById(program.getId())) {
+            redirectAttributes.addFlashAttribute("error", "Program with this ID already exists.");
+            return "redirect:/program/add";
+        }
+
         program.setCreatedAt(new Timestamp(System.currentTimeMillis()));
-        program.setRowState((short) 1); // assuming 1 = active
+        program.setRowState((short) 1); // Assuming 1 = active
+
         programRepository.save(program);
         return "redirect:/dashboard";
     }
@@ -64,11 +71,5 @@ public class ProgramController {
         model.addAttribute("program", program);
         model.addAttribute("editing", true);
         return "program_form";
-    }
-
-    @GetMapping("/program/delete/{id}")
-    public String deleteProgram(@PathVariable("id") short id) {
-        programRepository.deleteById(id);
-        return "redirect:/dashboard";
     }
 }

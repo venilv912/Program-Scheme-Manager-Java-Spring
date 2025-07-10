@@ -1,60 +1,46 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${editing} ? 'Edit Program' : 'Add Program'">Program Form</title>
+    <title th:text="${editing} ? 'Edit Master Course' : 'Add Master Course'">Master Course</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body style="padding-top: 20px;">
 <div th:replace="fragments/navbar :: navbar"></div>
-<div class="container mt-4">
-    <h2 th:text="${editing} ? 'Edit Program' : 'Add New Program'">Program Form</h2>
+<div class="container mt-5">
 
-    <form th:action="@{/program/save}" th:object="${program}" method="post">
+    <h2 th:text="${editing} ? 'Edit Master Course' : 'Add Master Course'"></h2>
+
+    <form th:action="@{/mastercourses/save}" th:object="${masterCourse}" method="post">
         <input type="hidden" name="editing" th:value="${editing}" />
 
         <div class="mb-3" th:if="${editing}">
-            <label class="form-label">Program ID</label>
+            <label class="form-label">Course ID</label>
 
             <!-- Hidden input to preserve value for submission -->
-            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{courseId}" />
 
             <!-- Disabled field for visual appearance -->
-            <input type="number" class="form-control" th:value="*{id}" disabled />
+            <input type="number" class="form-control" th:value="*{courseId}" disabled />
         </div>
 
         <div class="mb-3" th:unless="${editing}">
-            <label class="form-label" for="id">Program ID</label>
-            <input type="number" class="form-control" th:field="*{id}" id="id" required />
+            <label class="form-label" for="courseId">Course ID</label>
+            <input type="number" class="form-control" th:field="*{courseId}" id="courseId" required />
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Program Name</label>
-            <input type="text" class="form-control" th:field="*{name}" required />
+            <label class="form-label">Canonical Title</label>
+            <input type="text" class="form-control" th:field="*{canonicalTitle}" required />
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Description</label>
-            <textarea class="form-control" th:field="*{description}" required></textarea>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Duration</label>
-            <input type="number" class="form-control" th:field="*{duration}" />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Duration Units</label>
-            <input type="text" class="form-control" th:field="*{durationUnits}" />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Institute Code</label>
-            <input type="text" class="form-control" th:field="*{instCode}" />
+            <label class="form-label">Canonical Description</label>
+            <textarea class="form-control" th:field="*{canonicalDescription}"></textarea>
         </div>
 
         <button type="submit" class="btn btn-primary">Save</button>
-        <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+        <a class="btn btn-secondary" th:href="@{/mastercourses}">Cancel</a>
 
         <!-- Flash Message Alert -->
         <div class="container mt-3">

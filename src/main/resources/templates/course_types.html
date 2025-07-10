@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Course Types</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="padding-top: 20px;">
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="container mt-5">
+    <h2>Course Types for Program ID: <span th:text="${programId}"></span></h2>
+
+    <table class="table table-bordered mt-4">
+        <thead class="table-light">
+        <tr>
+            <th>Course Type Code</th>
+            <th>Course Type Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="type : ${courseTypes}">
+            <td th:text="${type.courseTypeCode}"></td>
+            <td th:text="${type.courseTypeName}"></td>
+            <td th:text="${type.description}"></td>
+            <td>
+                <a class="btn btn-sm btn-primary"
+                   th:href="@{/program/{programId}/coursetypes/edit(
+                programId=${type.programId},
+                courseTypeCode=${type.courseTypeCode})}">✏️ Edit</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="d-flex gap-2 mt-3">
+        <a class="btn btn-success" th:href="@{/program/{programId}/coursetypes/add(programId=${programId})}">➕ Add Course Type</a>
+        <a class="btn btn-secondary" th:href="@{/program/{id}(id=${programId})}">← Back to Schemes</a>
+    </div>
+</div>
+</body>
+</html>

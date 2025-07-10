@@ -1,60 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${editing} ? 'Edit Program' : 'Add Program'">Program Form</title>
+    <title>Add Course Type</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body style="padding-top: 20px;">
 <div th:replace="fragments/navbar :: navbar"></div>
-<div class="container mt-4">
-    <h2 th:text="${editing} ? 'Edit Program' : 'Add New Program'">Program Form</h2>
 
-    <form th:action="@{/program/save}" th:object="${program}" method="post">
+<div class="container mt-5">
+    <h2 th:text="${editing} ? 'Edit Course Type' : 'Add Course Type'"></h2>
+
+    <form th:action="@{/program/{programId}/coursetypes/save(programId=${courseType.programId})}"
+          th:object="${courseType}" method="post">
         <input type="hidden" name="editing" th:value="${editing}" />
 
         <div class="mb-3" th:if="${editing}">
-            <label class="form-label">Program ID</label>
+            <label class="form-label">Course Type Code</label>
 
             <!-- Hidden input to preserve value for submission -->
-            <input type="hidden" th:field="*{id}" />
+            <input type="hidden" th:field="*{courseTypeCode}" />
 
             <!-- Disabled field for visual appearance -->
-            <input type="number" class="form-control" th:value="*{id}" disabled />
+            <input type="text" class="form-control" th:value="*{CourseTypeCode}" disabled />
         </div>
 
         <div class="mb-3" th:unless="${editing}">
-            <label class="form-label" for="id">Program ID</label>
-            <input type="number" class="form-control" th:field="*{id}" id="id" required />
+            <label class="form-label" for="courseTypeCode">Course Type Code</label>
+            <input type="text" class="form-control" th:field="*{courseTypeCode}" id="courseTypeCode" required />
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Program Name</label>
-            <input type="text" class="form-control" th:field="*{name}" required />
+            <label class="form-label">Course Type Name</label>
+            <input type="text" class="form-control" th:field="*{courseTypeName}" required />
         </div>
 
         <div class="mb-3">
             <label class="form-label">Description</label>
-            <textarea class="form-control" th:field="*{description}" required></textarea>
+            <textarea class="form-control" th:field="*{description}"></textarea>
         </div>
 
-        <div class="mb-3">
-            <label class="form-label">Duration</label>
-            <input type="number" class="form-control" th:field="*{duration}" />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Duration Units</label>
-            <input type="text" class="form-control" th:field="*{durationUnits}" />
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Institute Code</label>
-            <input type="text" class="form-control" th:field="*{instCode}" />
-        </div>
+        <input type="hidden" th:field="*{programId}" />
 
         <button type="submit" class="btn btn-primary">Save</button>
-        <a href="/dashboard" class="btn btn-secondary">Cancel</a>
+        <a th:href="@{/program/{id}/coursetypes(id=${courseType.programId})}" class="btn btn-secondary">Cancel</a>
 
         <!-- Flash Message Alert -->
         <div class="container mt-3">

@@ -43,10 +43,19 @@ public class SchemeController {
 
     // Handle Scheme submission
     @PostMapping("/scheme/save")
-    public String saveScheme(@ModelAttribute("scheme") Scheme scheme) {
+    public String saveScheme(@ModelAttribute("scheme") Scheme scheme,
+                             @RequestParam("editing") boolean editing,
+                             RedirectAttributes redirectAttributes) {
+
+        if (!editing && schemeRepository.existsById(scheme.getId())) {
+            redirectAttributes.addFlashAttribute("error", "Scheme with this ID already exists.");
+            return "redirect:/program/" + scheme.getProgram().getId() + "/scheme/add";
+        }
+
         schemeRepository.save(scheme);
         return "redirect:/program/" + scheme.getProgram().getId();
     }
+
     @GetMapping("/program/{programId}/scheme/{schemeId}/details")
     public String viewSchemeDetails(@PathVariable int programId,
                                     @PathVariable int schemeId,
@@ -58,12 +67,6 @@ public class SchemeController {
         return "scheme_details";
     }
 
-    @GetMapping("/program/{programId}/scheme/{schemeId}/delete")
-    public String deleteScheme(@PathVariable int programId,
-                               @PathVariable int schemeId) {
-        schemeRepository.deleteById(schemeId);
-        return "redirect:/program/" + programId;
-    }
     @GetMapping("/program/{programId}/scheme/{schemeId}/edit")
     public String showEditSchemeForm(@PathVariable("programId") short programId,
                                      @PathVariable("schemeId") int schemeId,
@@ -141,9 +144,4 @@ public class SchemeController {
         // Redirect to the course requirements page of the new scheme
         return "redirect:/program/" + programId + "/scheme/" + newSchemeId + "/details";
     }
-
-
-
-
-
 }
