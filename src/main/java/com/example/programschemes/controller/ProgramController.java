@@ -72,4 +72,10 @@ public class ProgramController {
         model.addAttribute("editing", true);
         return "program_form";
     }
+    @GetMapping("/secure")
+    @ResponseBody
+    public String testSecure() {
+        return "You are authenticated!";
+    }
+
 }
