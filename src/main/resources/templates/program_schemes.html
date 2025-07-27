@@ -20,7 +20,7 @@
                 <strong>Institute Code: </strong> <span th:text="${program.instCode}"></span>
             </p>
             <div class="d-flex gap-2">
-                <a class="btn btn-warning" th:href="@{/program/edit/{id}(id=${program.id})}">✏️ Edit</a>
+                <a class="btn btn-warning" th:href="@{/program/edit/{id}(id=${program.id})}">Edit</a>
 
                 <a class="btn btn-primary ms-auto"
                    th:href="@{/program/{programId}/coursetypes(programId=${program.id})}">
@@ -52,13 +52,13 @@
                             <div class="col">
                                 <a class="btn btn-outline-primary w-100"
                                    th:href="@{'/program/' + ${program.id} + '/scheme/' + ${scheme.id} + '/courserequirements'}">
-                                    📚 Course<br>Requirements
+                                    Course<br>Requirements
                                 </a>
                             </div>
                             <div class="col">
                                 <a class="btn btn-outline-secondary w-100"
                                    th:href="@{/program/{programId}/scheme/{schemeId}/semestercourses(programId=${program.id}, schemeId=${scheme.id})}">
-                                📆 Semester<br>Courses
+                                Semester<br>Courses
                                 </a>
                             </div>
                         </div>
@@ -71,14 +71,14 @@
         <div class="col">
             <div class="card h-100 border-success text-center">
                 <div class="card-body d-flex flex-column justify-content-center">
-                    <a th:href="@{/program/{id}/scheme/add(id=${program.id})}" class="btn btn-success">➕ Add Scheme</a>
+                    <a th:href="@{/program/{id}/scheme/add(id=${program.id})}" class="btn btn-success">Add Scheme</a>
                 </div>
             </div>
         </div>
         <div class="col">
             <div class="card h-100 border-success text-center">
                 <div class="card-body d-flex flex-column justify-content-center">
-                    <a th:href="@{/program/{id}/scheme/pull(id=${program.id})}" class="btn btn-outline-info">📥 Pull from Existing Scheme</a>
+                    <a th:href="@{/program/{id}/scheme/pull(id=${program.id})}" class="btn btn-outline-info">Pull from Existing Scheme</a>
 
                 </div>
             </div>

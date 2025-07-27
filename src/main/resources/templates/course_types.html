@@ -28,14 +28,14 @@
                 <a class="btn btn-sm btn-primary"
                    th:href="@{/program/{programId}/coursetypes/edit(
                 programId=${type.programId},
-                courseTypeCode=${type.courseTypeCode})}">✏️ Edit</a>
+                courseTypeCode=${type.courseTypeCode})}">Edit</a>
             </td>
         </tr>
         </tbody>
     </table>
 
     <div class="d-flex gap-2 mt-3">
-        <a class="btn btn-success" th:href="@{/program/{programId}/coursetypes/add(programId=${programId})}">➕ Add Course Type</a>
+        <a class="btn btn-success" th:href="@{/program/{programId}/coursetypes/add(programId=${programId})}">Add Course Type</a>
         <a class="btn btn-secondary" th:href="@{/program/{id}(id=${programId})}">← Back to Schemes</a>
     </div>
 </div>

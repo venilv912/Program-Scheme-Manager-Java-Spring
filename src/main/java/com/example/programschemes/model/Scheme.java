@@ -30,7 +30,7 @@ public class Scheme {
     @Column(name = "min_credits", nullable = false)
     private Integer minCredits;
 
-    // 👉 Getters and Setters
+    // Getters and Setters
 
     public Integer getId() {
         return id;
