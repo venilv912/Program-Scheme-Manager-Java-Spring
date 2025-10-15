@@ -3,7 +3,7 @@ package com.example.programschemes.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "semestercourses")
+@Table(name = "schemecourses")
 @IdClass(SemesterCourseId.class)
 public class SemesterCourse {
 
@@ -24,7 +24,8 @@ public class SemesterCourse {
 
     @Column(name = "course_id")
     private Integer courseId;
-
+    @Column(name = "crsid")
+    private Integer crsid;
     @Column(name = "course_code") // length = 5
     private String courseCode;
 
@@ -143,4 +144,7 @@ public class SemesterCourse {
     public void setTotalCredits(Integer totalCredits) {
         this.totalCredits = totalCredits;
     }
+    public Integer getCrsid() { return crsid; }
+    public void setCrsid(Integer crsid) { this.crsid = crsid; }
+
 }
