@@ -44,6 +44,8 @@ public class Batches {
     @Column(name = "bchinstcode")
     private String bchinstcode;
 
+    @Column(name = "scheme_id")
+    private Long schemeId;
 
     public Short getBchid() { return bchid; }
     public void setBchid(Short bchid) { this.bchid = bchid; }
@@ -81,4 +83,6 @@ public class Batches {
     public String getBchinstcode() { return bchinstcode; }
     public void setBchinstcode(String bchinstcode) { this.bchinstcode = bchinstcode; }
 
+    public Long getSchemeId() { return schemeId; }
+    public void setSchemeId(Long schemeId) { this.schemeId = schemeId; }
 }
