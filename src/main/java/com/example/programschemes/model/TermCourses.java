@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "termcourses", schema="ec2")
+@Table(name = "termcourses", schema = "ec2")
 public class TermCourses {
 
     @Id
@@ -12,50 +12,68 @@ public class TermCourses {
     private Long tcrid;
 
     @Column(name = "tcrtrmid")
-    private Long tcrtrmid;
+    private Short tcrtrmid = 0;
 
     @Column(name = "tcrcrsid")
-    private Long tcrcrsid;
+    private Long tcrcrsid = 0L;
 
-    @Column(name = "tcrtype")
-    private String tcrtype;
+    @Column(name = "tcrtype", length = 10)
+    private String tcrtype = "N"; // e.g. Normal / Core / Elective etc.
 
     @Column(name = "tcrfacultyid")
-    private Long tcrfacultyid;
+    private Long tcrfacultyid = 0L;
 
-    @Column(name = "tcrroundlogic")
-    private String tcrroundlogic;
+    @Column(name = "tcrroundlogic", length = 10)
+    private String tcrroundlogic = "N";
 
     @Column(name = "tcrmarks")
-    private Short tcrmarks;
+    private Short tcrmarks = 0;
 
-    @Column(name = "tcrstatus")
-    private String tcrstatus;
+    @Column(name = "tcrstatus", length = 1)
+    private String tcrstatus = "A"; // Active (1-char status)
 
-    @Column(name = "tcr_access_status")
-    private String tcrAccessStatus;
+    @Column(name = "tcr_access_status", length = 1)
+    private String tcrAccessStatus = "C"; // Closed / Completed (1-char)
 
     @Column(name = "tcrcreatedby")
-    private Long tcrcreatedby;
+    private Long tcrcreatedby = 0L;
 
     @Column(name = "tcrcreatedat")
-    private LocalDateTime tcrcreatedat;
+    private LocalDateTime tcrcreatedat = LocalDateTime.now();
 
     @Column(name = "tcrlastupdatedby")
-    private Long tcrlastupdatedby;
+    private Long tcrlastupdatedby = 0L;
 
     @Column(name = "tcrlastupdatedat")
-    private LocalDateTime tcrlastupdatedat;
+    private LocalDateTime tcrlastupdatedat = LocalDateTime.now();
 
     @Column(name = "tcrrowstate")
-    private Integer tcrrowstate;
+    private Integer tcrrowstate = 1; // 1 = Active, 0 = Inactive
 
+    // Automatically fill defaults before inserting into DB
+    @PrePersist
+    public void prePersist() {
+        if (this.tcrtrmid == null) this.tcrtrmid = 0;
+        if (this.tcrcrsid == null) this.tcrcrsid = 0L;
+        if (this.tcrtype == null) this.tcrtype = "N";
+        if (this.tcrfacultyid == null) this.tcrfacultyid = 0L;
+        if (this.tcrroundlogic == null) this.tcrroundlogic = "N";
+        if (this.tcrmarks == null) this.tcrmarks = 0;
+        if (this.tcrstatus == null || this.tcrstatus.length() != 1) this.tcrstatus = "A";
+        if (this.tcrAccessStatus == null || this.tcrAccessStatus.length() != 1) this.tcrAccessStatus = "C";
+        if (this.tcrcreatedby == null) this.tcrcreatedby = 0L;
+        if (this.tcrlastupdatedby == null) this.tcrlastupdatedby = 0L;
+        if (this.tcrcreatedat == null) this.tcrcreatedat = LocalDateTime.now();
+        if (this.tcrlastupdatedat == null) this.tcrlastupdatedat = LocalDateTime.now();
+        if (this.tcrrowstate == null) this.tcrrowstate = 1;
+    }
 
+    // Getters and Setters
     public Long getTcrid() { return tcrid; }
     public void setTcrid(Long tcrid) { this.tcrid = tcrid; }
 
-    public Long getTcrtrmid() { return tcrtrmid; }
-    public void setTcrtrmid(Long tcrtrmid) { this.tcrtrmid = tcrtrmid; }
+    public Short getTcrtrmid() { return tcrtrmid; }
+    public void setTcrtrmid(Short tcrtrmid) { this.tcrtrmid = tcrtrmid; }
 
     public Long getTcrcrsid() { return tcrcrsid; }
     public void setTcrcrsid(Long tcrcrsid) { this.tcrcrsid = tcrcrsid; }
@@ -92,5 +110,4 @@ public class TermCourses {
 
     public Integer getTcrrowstate() { return tcrrowstate; }
     public void setTcrrowstate(Integer tcrrowstate) { this.tcrrowstate = tcrrowstate; }
-
 }

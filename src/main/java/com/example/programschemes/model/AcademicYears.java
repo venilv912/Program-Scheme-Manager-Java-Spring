@@ -29,8 +29,8 @@ public class AcademicYears {
     @Column(name = "ayrrowstate")
     private Short ayrrowstate;
 
-    @Column(name = "ayrfield1")
-    private Integer ayrfield1;
+//    @Column(name = "ayrfield1")
+//    private Integer ayrfield1;
 
 
     public Short getAyrid() { return ayrid; }
@@ -54,7 +54,7 @@ public class AcademicYears {
     public Short getAyrrowstate() { return ayrrowstate; }
     public void setAyrrowstate(Short ayrrowstate) { this.ayrrowstate = ayrrowstate; }
 
-    public Integer getAyrfield1() { return ayrfield1; }
-    public void setAyrfield1(Integer ayrfield1) { this.ayrfield1 = ayrfield1; }
+//    public Integer getAyrfield1() { return ayrfield1; }
+//    public void setAyrfield1(Integer ayrfield1) { this.ayrfield1 = ayrfield1; }
 
 }

@@ -33,4 +33,7 @@ public interface TermCoursesRepository extends JpaRepository<TermCourses, Intege
     @Query(value = "SELECT tc.TCRID FROM ec2.TERMCOURSES tc WHERE tc.TCRCRSID = :crsId AND tc.TCRTRMID = :trmId AND tc.TCRROWSTATE > 0", nativeQuery = true)
     Long findTcrid(@Param("crsId") Long crsId, @Param("trmId") Long trmId);
 
+    @Query(value = "SELECT MAX(tcr.TCRID) FROM ec2.TERMCOURSES tcr", nativeQuery = true)
+    Long findMaxTermCourseid();
+
 }

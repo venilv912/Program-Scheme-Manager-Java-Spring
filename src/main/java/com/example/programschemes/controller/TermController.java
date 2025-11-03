@@ -1,0 +1,159 @@
+package com.example.programschemes.controller;
+
+import com.example.programschemes.model.*;
+import com.example.programschemes.repository.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Controller
+@RequestMapping("/terms")
+public class TermController {
+
+    @Autowired
+    private ProgramRepository programRepository;
+
+    @Autowired
+    private TermsRepository termRepository;
+
+    @Autowired
+    private AcademicYearsRepository academicYearRepository;
+
+    @Autowired
+    private SemestersRepository semesterRepository;
+
+    @Autowired
+    private BatchesRepository batchRepository;
+
+    @Autowired
+    private SemesterCourseRepository schemeCourseRepository;
+
+    @Autowired
+    private TermCoursesRepository termCourseRepository;
+
+    @Autowired
+    private SchemeRepository schemeRepository;
+
+    // 🟢 1️⃣ Show "Add Term" form
+    @GetMapping("/add")
+    public String showAddTermForm(Model model) {
+        model.addAttribute("term", new Terms());
+        model.addAttribute("academicYears", academicYearRepository.findAll());
+        model.addAttribute("termNames", List.of("Autumn", "Winter", "Summer"));
+        return "add-term"; // templates/terms/add-term.html
+    }
+
+    // 🟢 2️⃣ Handle "Add Term" submission
+    @PostMapping("/add")
+    @Transactional
+    public String addTerm(
+            @RequestParam("academicYearId") Short academicYearId,
+            @RequestParam("termName") String termName,
+            @RequestParam("termStartDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate termStartDate,
+            @RequestParam("termEndDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate termEndDate,
+            Model model) {
+
+        // ✅ Generate new Term ID
+        Short maxId = termRepository.findMaxTrmid();
+        Short newTermId = (short) ((maxId == null ? 0 : maxId) + 1);
+
+        // ✅ Create and save Term
+        Terms term = new Terms();
+        term.setTrmid(newTermId);
+        term.setTrmname(termName);
+        term.setTrmayrid(academicYearId);
+        term.setTrmstarts(termStartDate);
+        term.setTrmends(termEndDate);
+        term.setTrmrowstate((short) 1);
+        term.setTrmcreatedat(LocalDateTime.now());
+        termRepository.save(term);
+
+        // ✅ Fetch all active batches
+        List<Batches> allBatches = batchRepository.findAll();
+
+        List<Batches> activeBatches = allBatches.stream()
+                .filter(batch -> {
+                    // Skip if schemeId is null
+                    if (batch.getSchemeId() == null) return false;
+
+                    Short batchAyrId = batch.getBchcalid();
+                    if (batchAyrId == null) return false;
+
+                    Programs program = programRepository.findById(batch.getBchprgid()).orElse(null);
+                    if (program == null || program.getDuration() == null) return false;
+
+                    int diff = academicYearId - batchAyrId;
+                    return diff >= 0 && diff < (program.getDuration());
+                })
+                .toList();
+
+
+        int totalSemesters = 0;
+        int totalCourses = 0;
+
+        // ✅ For each active batch
+        int cnt=0;
+        for (Batches batch : activeBatches) {
+            Programs program = programRepository.findById(batch.getBchprgid()).orElse(null);
+            if (program == null) continue;
+
+            // 🎯 Calculate semester number
+            int diff = academicYearId - batch.getBchcalid();
+            int semNo = diff * 2 + (termName.equalsIgnoreCase("Winter") ? 2 : 1);
+
+            // 🎯 Fetch only CORE courses of that semNo from the scheme
+            List<SemesterCourse> schemeCourses = schemeCourseRepository.findBySchemeIdAndSemNo(batch.getSchemeId(), semNo)
+                    .stream()
+                    .filter(sc -> sc.getCourseTypeCode() != null && sc.getCourseTypeCode().equalsIgnoreCase("CORE"))
+                    .toList();
+
+            //if (schemeCourses.isEmpty()) continue;
+
+            // 🎯 Create Semester record
+            Short maxSemId = semesterRepository.findMaxSemesterId();
+            Short newSemId = (short) ((maxSemId == null ? 0 : maxSemId) + 1);
+
+            Semesters semester = new Semesters();
+            semester.setStrid(newSemId);
+            semester.setStrbchid(batch.getBchid());
+            semester.setStrtrmid(term.getTrmid());
+            semester.setStrname(batch.getBchname() + " - " + termName + " (" + semNo + ")");
+            semesterRepository.save(semester);
+            totalSemesters++;
+
+            // 🎯 Copy only the CORE courses of that sem
+            for (SemesterCourse sc : schemeCourses) {
+                Long maxTcrId = termCourseRepository.findMaxTermCourseid();
+                Long newTcrId = (maxTcrId == null ? 1 : maxTcrId + 1);
+
+                TermCourses tc = new TermCourses();
+                tc.setTcrid(newTcrId);
+                tc.setTcrtrmid(term.getTrmid());
+                tc.setTcrcrsid(sc.getCrsid());
+                tc.setTcrtype("REGULAR");
+                termCourseRepository.save(tc);
+                totalCourses++;
+            }
+        }
+
+        model.addAttribute("message",
+                "✅ Term '" + termName + "' added successfully! Created " +
+                        totalSemesters + " semesters and " + totalCourses + " CORE term courses.");
+
+        return "redirect:/terms";
+    }
+
+    // 🟢 3️⃣ List all terms
+    @GetMapping
+    public String listTerms(Model model) {
+        model.addAttribute("terms", termRepository.findAll());
+        return "terms-list"; // templates/terms/list.html
+    }
+}

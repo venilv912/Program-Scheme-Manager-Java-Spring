@@ -14,4 +14,7 @@ public interface TermsRepository extends JpaRepository<Terms, Short> {
 
     @Query(value = "SELECT trm.TRMID FROM ec2.TERMS trm,ec2.ACADEMICYEARS acdy WHERE trm.TRMROWSTATE > 0 AND acdy.AYRROWSTATE>0 AND trm.TRMAYRID = acdy.AYRID AND trm.TRMNAME = :name AND acdy.AYRID = :ayrid", nativeQuery = true)
     Long findTermIdByName(@Param("name") String name, @Param("ayrid") Long ayrid);
+    @Query("SELECT MAX(t.trmid) FROM Terms t")
+    Short findMaxTrmid();
+
 }

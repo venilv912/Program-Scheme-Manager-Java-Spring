@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Terms</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body class="container mt-5">
+<h2>Existing Terms</h2>
+
+<a class="btn btn-success mb-3" th:href="@{/terms/add}">➕ Add New Term</a>
+
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>Term ID</th>
+        <th>Term Name</th>
+        <th>Academic Year</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="term : ${terms}">
+        <td th:text="${term.trmid}"></td>
+        <td th:text="${term.trmname}"></td>
+        <td th:text="${term.trmayrid}"></td>
+        <td th:text="${term.trmstarts}"></td>
+        <td th:text="${term.trmends}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

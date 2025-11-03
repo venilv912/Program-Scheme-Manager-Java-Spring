@@ -25,7 +25,7 @@ public class SemesterCourse {
     @Column(name = "course_id")
     private Integer courseId;
     @Column(name = "crsid")
-    private Integer crsid;
+    private Long crsid;
     @Column(name = "course_code") // length = 5
     private String courseCode;
 
@@ -144,7 +144,7 @@ public class SemesterCourse {
     public void setTotalCredits(Integer totalCredits) {
         this.totalCredits = totalCredits;
     }
-    public Integer getCrsid() { return crsid; }
-    public void setCrsid(Integer crsid) { this.crsid = crsid; }
+    public Long getCrsid() { return crsid; }
+    public void setCrsid(Long crsid) { this.crsid = crsid; }
 
 }

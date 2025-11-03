@@ -14,7 +14,6 @@ public class Scheme {
     @ManyToOne
     @JoinColumn(name = "program_id", nullable = false)
     private Programs program;
-
     @Column(name = "effective_from_year", nullable = false)
     private Integer effectiveFromYear;
 
