@@ -45,7 +45,7 @@ public class TermController {
     @Autowired
     private SemesterCoursesRepository semesterCoursesRepository;
 
-    // 🟢 1️⃣ Show "Add Term" form
+    // Show "Add Term" form
     @GetMapping("/add")
     public String showAddTermForm(Model model) {
         model.addAttribute("term", new Terms());
@@ -54,7 +54,7 @@ public class TermController {
         return "add-term"; // templates/terms/add-term.html
     }
 
-    // 🟢 2️⃣ Handle "Add Term" submission
+    // Handle "Add Term" submission
     @PostMapping("/add")
     @Transactional
     public String addTerm(
@@ -64,11 +64,11 @@ public class TermController {
             @RequestParam("termEndDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate termEndDate,
             Model model) {
 
-        // ✅ Generate new Term ID
+        // Generate new Term ID
         Short maxId = termRepository.findMaxTrmid();
         Short newTermId = (short) ((maxId == null ? 0 : maxId) + 1);
 
-        // ✅ Create and save Term
+        // Create and save Term
         Terms term = new Terms();
         term.setTrmid(newTermId);
         term.setTrmname(termName);
@@ -79,7 +79,7 @@ public class TermController {
         term.setTrmcreatedat(LocalDateTime.now());
         termRepository.save(term);
 
-        // ✅ Fetch all active batches
+        // Fetch all active batches
         List<Batches> allBatches = batchRepository.findAll();
 
         List<Batches> activeBatches = allBatches.stream()
@@ -102,17 +102,17 @@ public class TermController {
         int totalSemesters = 0;
         int totalCourses = 0;
 
-        // ✅ For each active batch
+        // For each active batch
         int cnt=0;
         for (Batches batch : activeBatches) {
             Programs program = programRepository.findById(batch.getBchprgid()).orElse(null);
             if (program == null) continue;
 
-            // 🎯 Calculate semester number
+            // Calculate semester number
             int diff = academicYearId - batch.getBchcalid();
             int semNo = diff * 2 + (termName.equalsIgnoreCase("Winter") ? 2 : 1);
 
-            // 🎯 Fetch only CORE courses of that semNo from the scheme
+            // Fetch only CORE courses of that semNo from the scheme
             List<SemesterCourse> schemeCourses = schemeCourseRepository.findBySchemeIdAndSemNo(batch.getSchemeId(), semNo)
                     .stream()
                     .filter(sc -> sc.getCourseTypeCode() != null && sc.getCourseTypeCode().equalsIgnoreCase("CORE"))
@@ -120,7 +120,7 @@ public class TermController {
 
             //if (schemeCourses.isEmpty()) continue;
 
-            // 🎯 Create Semester record
+            // Create Semester record
             Short maxSemId = semesterRepository.findMaxSemesterId();
             Short newSemId = (short) ((maxSemId == null ? 0 : maxSemId) + 1);
 
@@ -132,13 +132,10 @@ public class TermController {
             semesterRepository.save(semester);
             totalSemesters++;
 
-            // 🎯 Copy only the CORE courses of that sem
-            // 🎯 Copy only the CORE courses of that sem
+            // Copy only the CORE courses of that sem
             for (SemesterCourse sc : schemeCourses) {
 
-                // ================================
-                // 1️⃣ Insert into TERMCourses (your existing logic)
-                // ================================
+                // Insert into TERMCourses (your existing logic)
                 Long maxTcrId = termCourseRepository.findMaxTermCourseid();
                 Long newTcrId = (maxTcrId == null ? 1 : maxTcrId + 1);
 
@@ -152,9 +149,7 @@ public class TermController {
                 termCourseRepository.save(tc);
                 totalCourses++;
 
-                // ================================
-                // 2️⃣ NEW: Insert into SEMESTERCOURSES
-                // ================================
+                // NEW: Insert into SEMESTERCOURSES
 
                 Long maxScrId = semesterCoursesRepository.findMaxSemesterCourseid();
                 Long newScrId = (maxScrId == null ? 1 : maxScrId + 1);
@@ -173,15 +168,13 @@ public class TermController {
         }
 
         model.addAttribute("message",
-                "✅ Term '" + termName + "' added successfully! Created " +
+                "Term '" + termName + "' added successfully! Created " +
                         totalSemesters + " semesters and " + totalCourses + " CORE term courses.");
 
         return "redirect:/terms";
     }
 
-    // --------------------------------------------------------
-// 1️⃣ LIST TERMS (DESC ORDER)
-// --------------------------------------------------------
+    // LIST TERMS (DESC ORDER)
     @GetMapping("")
     public String listTerms(Model model) {
         model.addAttribute("terms",
@@ -193,9 +186,7 @@ public class TermController {
         return "terms-list";
     }
 
-    // --------------------------------------------------------
-// 2️⃣ LIST SEMESTERS (DESC ORDER)
-// --------------------------------------------------------
+    // LIST SEMESTERS (DESC ORDER)
     @GetMapping("/semesters")
     public String listSemesters(Model model) {
         model.addAttribute("semesters",
@@ -207,9 +198,7 @@ public class TermController {
         return "semesters-list"; // semesters.html
     }
 
-    // --------------------------------------------------------
-// 3️⃣ LIST TERM COURSES (DESC ORDER BY termId, then courseCode)
-// --------------------------------------------------------
+    // LIST TERM COURSES (DESC ORDER BY termId, then courseCode)
     @GetMapping("/termcourses")
     public String listTermCourses(Model model) {
         model.addAttribute("termcourses",
@@ -235,6 +224,4 @@ public class TermController {
 
         return "semestercourses-list";
     }
-
-
 }

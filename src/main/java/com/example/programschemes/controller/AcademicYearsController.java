@@ -16,9 +16,7 @@ public class AcademicYearsController {
     @Autowired
     private AcademicYearsRepository academicYearsRepository;
 
-    // -----------------------------------------
     // 1. LIST ALL ACADEMIC YEARS
-    // -----------------------------------------
     @GetMapping
     public String listAcademicYears(Model model) {
         model.addAttribute("academicyears",
@@ -30,18 +28,14 @@ public class AcademicYearsController {
         return "list_academic_years";
     }
 
-    // -----------------------------------------
     // 2. SHOW ADD FORM
-    // -----------------------------------------
     @GetMapping("/add")
     public String showAddForm(Model model) {
         model.addAttribute("academicYear", new AcademicYears());
         return "add_academic_year";
     }
 
-    // -----------------------------------------
     // 3. HANDLE ADD FORM SUBMISSION
-    // -----------------------------------------
     @PostMapping("/add")
     public String saveAcademicYear(@ModelAttribute AcademicYears ay) {
 

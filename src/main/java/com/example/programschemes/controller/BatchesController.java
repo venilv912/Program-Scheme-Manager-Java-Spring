@@ -44,7 +44,6 @@ public class BatchesController {
 
         model.addAttribute("batch", new Batches());
 
-        // Load everything normally (NO AJAX)
         List<AcademicYears> years = academicYearRepository.findAllByOrderByAyridDesc();
         List<Scheme> schemes = schemeRepository.findAll();
         List<Programs>programs=programRepository.findAll();
