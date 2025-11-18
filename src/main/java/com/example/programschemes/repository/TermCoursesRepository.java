@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 @Repository
-public interface TermCoursesRepository extends JpaRepository<TermCourses, Integer> {
+public interface TermCoursesRepository extends JpaRepository<TermCourses, Long> {
     
-    @Query(value = "SELECT * FROM ec2.TERMCOURSES trmsrc WHERE trmsrc.TCRID = :trmcrsid AND trmsrc.TCRROWSTATE > 0", nativeQuery = true)
+    @Query(value = "SELECT * FROM ec2.TERMCOURSES trmsrc WHERE trmsrc.TCRID = :trmcrsid AND trmsrc.TCRROWSTATE >= 0", nativeQuery = true)
     TermCourses getbytrmcrsid(@Param("trmcrsid") Long termcourseId);
 
     @Query(value = "SELECT * FROM ec2.TERMCOURSEAVAILABLEFOR tca, ec2.TERMCOURSES tc, ec2.COURSES c WHERE tca.TCAPRGID = :prgId AND tca.TCATCRID = tc.TCRID AND tc.TCRCRSID = c.CRSID AND tca.TCASTATUS = 'T' AND tca.TCAROWSTATE > 0 AND tc.TCRROWSTATE > 0 AND c.CRSROWSTATE > 0 AND tc.TCRTRMID = :trmId ORDER BY c.CRSNAME", nativeQuery = true)
@@ -30,7 +30,7 @@ public interface TermCoursesRepository extends JpaRepository<TermCourses, Intege
     @Query(value = "SELECT * FROM ec2.TERMCOURSEAVAILABLEFOR tca, ec2.TERMCOURSES tc, ec2.COURSES c WHERE tca.TCAPRGID = :prgId AND tc.TCRTRMID = :trmId AND tca.TCATCRID = tc.TCRID AND tc.TCRCRSID = c.CRSID AND tc.TCRCRSID IN (SELECT tc2.TCRCRSID FROM ec2.EGCRSTT1 e, ec2.TERMCOURSES tc2 WHERE tc2.TCRID = e.TCRID AND (e.OBTGR_ID = 4 OR e.OBTGR_ID = 21 OR e.OBTGR_ID = 22) AND e.ROW_ST > '0' AND e.STUD_ID = :studentId AND tc2.TCRROWSTATE > 0 AND tc2.TCRCRSID = c.CRSID AND c.CRSROWSTATE > 0) AND tc.TCRROWSTATE > 0 AND c.CRSROWSTATE > 0 ORDER BY c.CRSNAME", nativeQuery = true)
     List<TermCourses> getGICourses(@Param("studentId") Long studentId, @Param("prgId") Short prgId, @Param("trmId") Short trmId);
 
-    @Query(value = "SELECT tc.TCRID FROM ec2.TERMCOURSES tc WHERE tc.TCRCRSID = :crsId AND tc.TCRTRMID = :trmId AND tc.TCRROWSTATE > 0", nativeQuery = true)
+    @Query(value = "SELECT tc.TCRID FROM ec2.TERMCOURSES tc WHERE tc.TCRCRSID = :crsId AND tc.TCRTRMID = :trmId AND tc.TCRROWSTATE >= 0", nativeQuery = true)
     Long findTcrid(@Param("crsId") Long crsId, @Param("trmId") Long trmId);
 
     @Query(value = "SELECT MAX(tcr.TCRID) FROM ec2.TERMCOURSES tcr", nativeQuery = true)

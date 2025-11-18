@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Batches</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="padding-top: 20px;">
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<div class="container mt-5">
+
+    <h2>Batches</h2>
+
+    <a class="btn btn-primary btn-sm mt-3" th:href="@{/batches/add}">
+        + Add New Batch
+    </a>
+
+    <table class="table table-bordered mt-3">
+        <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Program ID</th>
+            <th>Calendar ID</th>
+            <th>Name</th>
+            <th>Capacity</th>
+            <th>Scheme ID</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:each="b : ${batches}">
+            <td th:text="${b.bchid}"></td>
+            <td th:text="${b.bchprgid}"></td>
+            <td th:text="${b.bchcalid}"></td>
+            <td th:text="${b.bchname}"></td>
+            <td th:text="${b.bchcapacity}"></td>
+            <td th:text="${b.schemeId}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

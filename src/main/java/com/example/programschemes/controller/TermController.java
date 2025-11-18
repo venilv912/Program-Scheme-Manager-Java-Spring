@@ -3,6 +3,7 @@ package com.example.programschemes.controller;
 import com.example.programschemes.model.*;
 import com.example.programschemes.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,11 +42,14 @@ public class TermController {
     @Autowired
     private SchemeRepository schemeRepository;
 
+    @Autowired
+    private SemesterCoursesRepository semesterCoursesRepository;
+
     // 🟢 1️⃣ Show "Add Term" form
     @GetMapping("/add")
     public String showAddTermForm(Model model) {
         model.addAttribute("term", new Terms());
-        model.addAttribute("academicYears", academicYearRepository.findAll());
+        model.addAttribute("academicYears", academicYearRepository.findAllByOrderByAyridDesc());
         model.addAttribute("termNames", List.of("Autumn", "Winter", "Summer"));
         return "add-term"; // templates/terms/add-term.html
     }
@@ -129,7 +133,12 @@ public class TermController {
             totalSemesters++;
 
             // 🎯 Copy only the CORE courses of that sem
+            // 🎯 Copy only the CORE courses of that sem
             for (SemesterCourse sc : schemeCourses) {
+
+                // ================================
+                // 1️⃣ Insert into TERMCourses (your existing logic)
+                // ================================
                 Long maxTcrId = termCourseRepository.findMaxTermCourseid();
                 Long newTcrId = (maxTcrId == null ? 1 : maxTcrId + 1);
 
@@ -138,9 +147,29 @@ public class TermController {
                 tc.setTcrtrmid(term.getTrmid());
                 tc.setTcrcrsid(sc.getCrsid());
                 tc.setTcrtype("REGULAR");
+                tc.setTcrrowstate(1);          // ensure rowstate is valid
+                tc.setTcrstatus("AVAILABLE");
                 termCourseRepository.save(tc);
                 totalCourses++;
+
+                // ================================
+                // 2️⃣ NEW: Insert into SEMESTERCOURSES
+                // ================================
+
+                Long maxScrId = semesterCoursesRepository.findMaxSemesterCourseid();
+                Long newScrId = (maxScrId == null ? 1 : maxScrId + 1);
+
+                SemesterCourses semCourse = new SemesterCourses();
+                semCourse.setScrid(newScrId);
+                semCourse.setScrstrid(newSemId);           // link to newly created semester
+                semCourse.setScrcrsid(sc.getCrsid());      // course ID from scheme
+                semCourse.setScrelective("N");             // CORE means non-elective
+                semCourse.setScrrowstate(1);       // active row
+                semCourse.setScrcreatedat(LocalDateTime.now());
+
+                semesterCoursesRepository.save(semCourse);
             }
+
         }
 
         model.addAttribute("message",
@@ -150,10 +179,62 @@ public class TermController {
         return "redirect:/terms";
     }
 
-    // 🟢 3️⃣ List all terms
-    @GetMapping
+    // --------------------------------------------------------
+// 1️⃣ LIST TERMS (DESC ORDER)
+// --------------------------------------------------------
+    @GetMapping("")
     public String listTerms(Model model) {
-        model.addAttribute("terms", termRepository.findAll());
-        return "terms-list"; // templates/terms/list.html
+        model.addAttribute("terms",
+                termRepository.findAll()
+                        .stream()
+                        .sorted((a, b) -> b.getTrmid().compareTo(a.getTrmid()))
+                        .toList()
+        );
+        return "terms-list";
     }
+
+    // --------------------------------------------------------
+// 2️⃣ LIST SEMESTERS (DESC ORDER)
+// --------------------------------------------------------
+    @GetMapping("/semesters")
+    public String listSemesters(Model model) {
+        model.addAttribute("semesters",
+                semesterRepository.findAll()
+                        .stream()
+                        .sorted((a, b) -> b.getStrid().compareTo(a.getStrid()))
+                        .toList()
+        );
+        return "semesters-list"; // semesters.html
+    }
+
+    // --------------------------------------------------------
+// 3️⃣ LIST TERM COURSES (DESC ORDER BY termId, then courseCode)
+// --------------------------------------------------------
+    @GetMapping("/termcourses")
+    public String listTermCourses(Model model) {
+        model.addAttribute("termcourses",
+                termCourseRepository.findAll()
+                        .stream()
+                        .sorted((a, b) -> {
+                            int cmp = b.getTcrid().compareTo(a.getTcrid());
+                            return cmp;
+                        })
+                        .toList()
+        );
+        return "termcourses-list"; // term_courses.html
+    }
+
+    @GetMapping("/semestercourses")
+    public String listSemesterCourses(Model model) {
+
+        // Get all semester courses sorted DESC by scrid
+        List<SemesterCourses> semesterCourses = semesterCoursesRepository
+                .findAll(Sort.by(Sort.Direction.DESC, "scrid"));
+
+        model.addAttribute("semesterCourses", semesterCourses);
+
+        return "semestercourses-list";
+    }
+
+
 }

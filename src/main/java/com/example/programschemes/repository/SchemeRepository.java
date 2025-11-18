@@ -7,6 +7,6 @@ import java.util.List;
 public interface SchemeRepository extends JpaRepository<Scheme, Integer> {
 
     // This is the method to add:
-    List<Scheme> findByProgramId(Short programId);
+    List<Scheme> findByProgram_Id(Short programId);
 
 }

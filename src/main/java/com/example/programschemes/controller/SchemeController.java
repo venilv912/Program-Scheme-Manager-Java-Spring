@@ -80,7 +80,7 @@ public class SchemeController {
     }
     @GetMapping("/program/{id}/scheme/pull")
     public String showPullForm(@PathVariable("id") Short programId, Model model) {
-        List<Scheme> allSchemes = schemeRepository.findByProgramId(programId);
+        List<Scheme> allSchemes = schemeRepository.findByProgram_Id(programId);
         model.addAttribute("schemes", allSchemes);
         model.addAttribute("programId", programId);
         return "pull_scheme_select";
@@ -144,4 +144,5 @@ public class SchemeController {
         // Redirect to the course requirements page of the new scheme
         return "redirect:/program/" + programId + "/scheme/" + newSchemeId + "/details";
     }
+
 }

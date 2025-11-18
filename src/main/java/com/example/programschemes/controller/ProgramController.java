@@ -60,7 +60,7 @@ public class ProgramController {
         if (program.isEmpty()) {
             return "redirect:/dashboard";
         }
-        List<Scheme> schemes = schemeRepository.findByProgramId(programId);
+        List<Scheme> schemes = schemeRepository.findByProgram_Id(programId);
         model.addAttribute("program", program.get());
         model.addAttribute("schemes", schemes);
         return "program_schemes";
