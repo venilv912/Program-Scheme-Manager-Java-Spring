@@ -79,6 +79,15 @@ public class TermController {
         term.setTrmcreatedat(LocalDateTime.now());
         termRepository.save(term);
 
+        // Finding academic year entity
+        AcademicYears academicYear = academicYearRepository.findById(academicYearId).orElseThrow(() -> new RuntimeException("Academic Year not found"));
+
+        // Extract starting year name
+        String academicAyrName = academicYear.getAyrname();
+
+        // Extracting starting year
+        int academicYearStarting = Integer.parseInt(academicAyrName.split("-")[0]);
+
         // Fetch all active batches
         List<Batches> allBatches = batchRepository.findAll();
 
@@ -93,7 +102,17 @@ public class TermController {
                     Programs program = programRepository.findById(batch.getBchprgid()).orElse(null);
                     if (program == null || program.getDuration() == null) return false;
 
-                    int diff = academicYearId - batchAyrId;
+                    // Finding academic year entity
+                    AcademicYears batchYear = academicYearRepository.findById(batchAyrId).orElseThrow(() -> new RuntimeException("Batch Year not found"));
+
+                    // Extract starting year name
+                    String batchAyrName = batchYear.getAyrname();
+
+                    // Extracting starting year
+                    int batchYearStarting = Integer.parseInt(batchAyrName.split("-")[0]);
+
+                    // Calculate difference
+                    int diff = academicYearStarting - batchYearStarting;
                     return diff >= 0 && diff < (program.getDuration());
                 })
                 .toList();
@@ -109,7 +128,19 @@ public class TermController {
             if (program == null) continue;
 
             // Calculate semester number
-            int diff = academicYearId - batch.getBchcalid();
+            Short batchAyrId = batch.getBchcalid();
+
+            // Finding academic year entity
+            AcademicYears batchYear = academicYearRepository.findById(batchAyrId).orElseThrow(() -> new RuntimeException("Batch Year not found"));
+
+            // Extract starting year name
+            String batchAyrName = batchYear.getAyrname();
+
+            // Extracting starting year
+            int batchYearStarting = Integer.parseInt(batchAyrName.split("-")[0]);
+
+            // Calculate difference
+            int diff = academicYearStarting - batchYearStarting;
             int semNo = diff * 2 + (termName.equalsIgnoreCase("Winter") ? 2 : 1);
 
             // Fetch only CORE courses of that semNo from the scheme
