@@ -26,8 +26,15 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/login?logout")
+                        .invalidateHttpSession(true)       // Force session invalidation
+                        .clearAuthentication(true)         // Clear SecurityContext
+                        .deleteCookies("JSESSIONID")       // Remove session cookie
                         .permitAll()
+                )
+                .sessionManagement(session -> session
+                        .sessionFixation().newSession()
                 );
 
         return http.build();
@@ -38,7 +45,7 @@ public class SecurityConfig {
         var user = User.builder()
                 .username("admin")
                 .password(passwordEncoder().encode("admin"))
-                .roles("USER")
+                .roles("ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(user);
     }
