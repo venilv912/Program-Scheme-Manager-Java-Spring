@@ -20,13 +20,8 @@
     <table class="table table-bordered">
         <thead class="table-light">
         <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Created By</th>
-            <th>Created At</th>
-            <th>Last Updated By</th>
-            <th>Last Updated At</th>
-            <th>Row State</th>
+            <th>Academic Year ID</th>
+            <th>Academic Year</th>
         </tr>
         </thead>
 
@@ -34,11 +29,6 @@
         <tr th:each="ay : ${academicyears}">
             <td th:text="${ay.ayrid}"></td>
             <td th:text="${ay.ayrname}"></td>
-            <td th:text="${ay.ayrcreatedby}"></td>
-            <td th:text="${ay.ayrcreatedat}"></td>
-            <td th:text="${ay.ayrlastupdatedby}"></td>
-            <td th:text="${ay.ayrlastupdatedat}"></td>
-            <td th:text="${ay.ayrrowstate}"></td>
         </tr>
         </tbody>
     </table>

@@ -20,23 +20,23 @@
     <table class="table table-bordered mt-3">
         <thead class="table-light">
         <tr>
-            <th>ID</th>
-            <th>Program ID</th>
-            <th>Calendar ID</th>
-            <th>Name</th>
+            <th>Batch ID</th>
+            <th>Academic Year</th>
+            <th>Program</th>
+            <th>Batch</th>
+            <th>Scheme</th>
             <th>Capacity</th>
-            <th>Scheme ID</th>
         </tr>
         </thead>
 
         <tbody>
         <tr th:each="b : ${batches}">
             <td th:text="${b.bchid}"></td>
-            <td th:text="${b.bchprgid}"></td>
-            <td th:text="${b.bchcalid}"></td>
+            <td th:text="${b.ayrname}"></td>
+            <td th:text="${b.prgname}"></td>
             <td th:text="${b.bchname}"></td>
+            <td th:text="${b.schemeyear}"></td>
             <td th:text="${b.bchcapacity}"></td>
-            <td th:text="${b.schemeId}"></td>
         </tr>
         </tbody>
     </table>

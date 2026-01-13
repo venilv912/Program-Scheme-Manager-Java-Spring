@@ -1,5 +1,6 @@
 package com.example.programschemes.controller;
 
+import com.example.programschemes.dto.BatchViewDTO;
 import com.example.programschemes.model.Batches;
 import com.example.programschemes.model.AcademicYears;
 import com.example.programschemes.model.Programs;
@@ -34,7 +35,19 @@ public class BatchesController {
     // Show all batches
     @GetMapping
     public String listBatches(Model model) {
-        model.addAttribute("batches", batchRepository.findAllByOrderByBchidDesc());
+        List<Object[]> rows = batchRepository.getAllBatchesDetailsRaw();
+
+        List<BatchViewDTO> batches = rows.stream()
+                .map(r -> new BatchViewDTO(
+                        ((Number) r[0]).longValue(),
+                        (String) r[1],
+                        (String) r[2],
+                        (String) r[3],
+                        ((Number) r[4]).intValue(),
+                        r[5] != null ? ((Number) r[5]).intValue() : null
+                )).toList();
+
+        model.addAttribute("batches", batches);
         return "batches";
     }
 
