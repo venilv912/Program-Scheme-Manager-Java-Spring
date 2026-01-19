@@ -24,7 +24,7 @@
         <thead class="table-light">
         <tr>
             <th>Term ID</th>
-            <th>Term Name</th>
+            <th>Term</th>
             <th>Academic Year</th>
             <th>Start Date</th>
             <th>End Date</th>
@@ -35,7 +35,7 @@
         <tr th:each="term : ${terms}">
             <td th:text="${term.trmid}"></td>
             <td th:text="${term.trmname}"></td>
-            <td th:text="${term.trmayrid}"></td>
+            <td th:text="${term.ayrname}"></td>
             <td th:text="${term.trmstarts}"></td>
             <td th:text="${term.trmends}"></td>
         </tr>

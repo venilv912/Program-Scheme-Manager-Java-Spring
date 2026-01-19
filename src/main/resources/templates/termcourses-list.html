@@ -16,23 +16,19 @@
     <table class="table table-bordered mt-3">
         <thead class="table-light">
         <tr>
-            <th>Term Course ID</th>
-            <th>Term ID</th>
-            <th>Course ID</th>
-            <th>Course Type</th>
-            <th>Faculty ID</th>
-            <th>Status</th>
+            <th>Term</th>
+            <th>Course Code</th>
+            <th>Course Title</th>
+            <th>Credit Hours</th>
         </tr>
         </thead>
 
         <tbody>
         <tr th:each="tc : ${termcourses}">
-            <td th:text="${tc.tcrid}"></td>
-            <td th:text="${tc.tcrtrmid}"></td>
-            <td th:text="${tc.tcrcrsid}"></td>
-            <td th:text="${tc.tcrtype}"></td>
-            <td th:text="${tc.tcrfacultyid}"></td>
-            <td th:text="${tc.tcrstatus}"></td>
+            <td th:text="${tc.term}"></td>
+            <td th:text="${tc.crscode}"></td>
+            <td th:text="${tc.crsname}"></td>
+            <td th:text="${tc.credithours}"></td>
         </tr>
         </tbody>
 

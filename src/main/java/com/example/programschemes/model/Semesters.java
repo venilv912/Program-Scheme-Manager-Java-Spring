@@ -21,13 +21,13 @@ public class Semesters {
     private String strname = "U";
 
     @Column(name = "strfield1")
-    private String strfield1 = "N";
+    private String strfield1 = "Y";
 
     @Column(name = "strfield2")
-    private String strfield2 = "N";
+    private String strfield2 = "T";
 
     @Column(name = "strfield3")
-    private String strfield3 = "N";
+    private String strfield3 = "T";
 
     @Column(name = "strcreatedby")
     private Long strcreatedby = 0L;
@@ -48,24 +48,24 @@ public class Semesters {
     private Short strseqno = 0;
 
     @Column(name = "strstcid")
-    private Short strstcid = 0;
+    private Short strstcid = 1;
 
     @Column(name = "strresultdecdate")
     private LocalDateTime strresultdecdate = LocalDateTime.now();
 
     // ⚠ These two are likely CHAR(1) in DB, so use one-letter codes
     @Column(name = "strregstatus", length = 1)
-    private String strregstatus = "P"; // Pending
+    private String strregstatus;
 
     @Column(name = "stradddropstatus", length = 1)
-    private String stradddropstatus = "C"; // Closed
+    private String stradddropstatus;
 
     @PrePersist
     public void prePersist() {
         if (this.strname == null) this.strname = "U";
-        if (this.strfield1 == null) this.strfield1 = "N";
-        if (this.strfield2 == null) this.strfield2 = "N";
-        if (this.strfield3 == null) this.strfield3 = "N";
+        if (this.strfield1 == null) this.strfield1 = "Y";
+        if (this.strfield2 == null) this.strfield2 = "T";
+        if (this.strfield3 == null) this.strfield3 = "T";
         if (this.strcreatedat == null) this.strcreatedat = LocalDateTime.now();
         if (this.strlastupdatedat == null) this.strlastupdatedat = LocalDateTime.now();
         if (this.strresultdecdate == null) this.strresultdecdate = LocalDateTime.now();
@@ -75,9 +75,7 @@ public class Semesters {
         if (this.strtrmid == null) this.strtrmid = 0;
         if (this.strrowstate == null) this.strrowstate = 1;
         if (this.strseqno == null) this.strseqno = 0;
-        if (this.strstcid == null) this.strstcid = 0;
-        if (this.strregstatus == null || this.strregstatus.length() != 1) this.strregstatus = "P";
-        if (this.stradddropstatus == null || this.stradddropstatus.length() != 1) this.stradddropstatus = "C";
+        if (this.strstcid == null) this.strstcid = 1;
     }
 
     // Getters and Setters

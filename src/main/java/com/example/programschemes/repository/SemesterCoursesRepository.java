@@ -52,5 +52,21 @@ public interface SemesterCoursesRepository extends JpaRepository<SemesterCourses
     @Query(value = "SELECT MAX(scr.SCRID) FROM ec2.SEMESTERCOURSES scr",
             nativeQuery = true)
     Long findMaxSemesterCourseid();
-
+    @Query(value = """
+            SELECT CONCAT(p.prgname, ' ', b.bchname) AS batch, CONCAT(s.strname, ' (', a.ayrname, ' ', t.trmname, ')') AS semester, c.crscode AS crscode, c.crsname AS crsname, CONCAT(c.crscreditpoints, ' (', c.crslectures, ' + ', c.crstutorials, ' + ', c.crspracticals, ')') AS credithours FROM ec2.semestercourses AS sc
+            JOIN ec2.semesters AS s
+            ON sc.scrstrid=s.strid
+            JOIN ec2.batches AS b
+            ON s.strbchid=b.bchid
+            JOIN ec2.programs AS p
+            ON b.bchprgid=p.prgid
+            JOIN ec2.terms AS t
+            ON s.strtrmid=t.trmid
+            JOIN ec2.academicyears AS a
+            ON t.trmayrid=a.ayrid
+            JOIN ec2.courses AS c
+            ON sc.scrcrsid=c.crsid
+            ORDER BY sc.scrid DESC
+            """, nativeQuery = true)
+    List<Object[]> getAllSemesterCoursesDetailsRaw();
 }

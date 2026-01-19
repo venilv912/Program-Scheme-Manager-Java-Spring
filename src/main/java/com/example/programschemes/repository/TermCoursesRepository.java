@@ -36,4 +36,15 @@ public interface TermCoursesRepository extends JpaRepository<TermCourses, Long> 
     @Query(value = "SELECT MAX(tcr.TCRID) FROM ec2.TERMCOURSES tcr", nativeQuery = true)
     Long findMaxTermCourseid();
 
+    @Query(value = """
+            SELECT CONCAT(t.trmname, ' (', a.ayrname, ')') AS term, c.crscode AS crscode, c.crsname AS crsname, CONCAT(c.crscreditpoints, ' (', c.crslectures, ' + ', c.crstutorials, ' + ', c.crspracticals, ')') AS credithours FROM ec2.termcourses AS tc
+            JOIN ec2.terms AS t
+            ON tc.tcrtrmid=t.trmid
+            JOIN ec2.academicyears AS a
+            ON t.trmayrid=a.ayrid
+            JOIN ec2.courses AS c
+            ON tc.tcrcrsid=c.crsid
+            ORDER BY tc.tcrid DESC
+            """, nativeQuery = true)
+    List<Object[]> getAllTermCoursesDetailsRaw();
 }

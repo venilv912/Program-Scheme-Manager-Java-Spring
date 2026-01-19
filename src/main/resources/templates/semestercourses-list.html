@@ -16,33 +16,21 @@
     <table class="table table-bordered mt-3">
         <thead class="table-light">
         <tr>
-            <th>SCR ID</th>
-            <th>SCRSTR ID</th>
-            <th>Elective</th>
-            <th>Course ID</th>
-            <th>CGP ID</th>
-            <th>Created By</th>
-            <th>Created At</th>
-            <th>Last Updated By</th>
-            <th>Last Updated At</th>
-            <th>Row State</th>
-            <th>TCR ID</th>
+            <th>Batch</th>
+            <th>Semester</th>
+            <th>Course Code</th>
+            <th>Course Title</th>
+            <th>Credit Hours</th>
         </tr>
         </thead>
 
         <tbody>
         <tr th:each="sc : ${semesterCourses}">
-            <td th:text="${sc.scrid}"></td>
-            <td th:text="${sc.scrstrid}"></td>
-            <td th:text="${sc.screlective}"></td>
-            <td th:text="${sc.scrcrsid}"></td>
-            <td th:text="${sc.srcgpid}"></td>
-            <td th:text="${sc.scrcreatedby}"></td>
-            <td th:text="${sc.scrcreatedat}"></td>
-            <td th:text="${sc.scrlastupdatedby}"></td>
-            <td th:text="${sc.scrlastupdatedat}"></td>
-            <td th:text="${sc.scrrowstate}"></td>
-            <td th:text="${sc.scrtcrid}"></td>
+            <td th:text="${sc.batch}"></td>
+            <td th:text="${sc.semester}"></td>
+            <td th:text="${sc.crscode}"></td>
+            <td th:text="${sc.crsname}"></td>
+            <td th:text="${sc.credithours}"></td>
         </tr>
         </tbody>
 

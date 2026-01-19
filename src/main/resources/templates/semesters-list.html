@@ -19,17 +19,16 @@
             <th>Semester ID</th>
             <th>Batch</th>
             <th>Term</th>
-            <th>Semester Title</th>
-            <th>Actions</th>
+            <th>Semester</th>
         </tr>
         </thead>
 
         <tbody>
         <tr th:each="sem : ${semesters}">
             <td th:text="${sem.strid}"></td>
-            <td th:text="${sem.strbchid}"></td>
-            <td th:text="${sem.strtrmid}"></td>
-            <td th:text="${sem.strname}"></td>
+            <td th:text="${sem.batch}"></td>
+            <td th:text="${sem.term}"></td>
+            <td th:text="${sem.semester}"></td>
 
         </tr>
         </tbody>

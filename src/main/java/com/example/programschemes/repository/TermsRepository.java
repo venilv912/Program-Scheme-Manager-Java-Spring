@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TermsRepository extends JpaRepository<Terms, Short> {
     
@@ -16,5 +18,6 @@ public interface TermsRepository extends JpaRepository<Terms, Short> {
     Long findTermIdByName(@Param("name") String name, @Param("ayrid") Long ayrid);
     @Query("SELECT MAX(t.trmid) FROM Terms t")
     Short findMaxTrmid();
-
+    @Query(value = "SELECT t.trmid AS trmid, t.trmname AS trmname, a.ayrname AS ayrname, t.trm_starts AS trmstarts, t.trm_ends AS trmends FROM ec2.terms AS t JOIN ec2.academicyears AS a ON t.trmayrid=a.ayrid ORDER BY t.trmid DESC", nativeQuery = true)
+    List<Object[]> getAllTermsDetailsRaw();
 }

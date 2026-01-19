@@ -1,5 +1,7 @@
 package com.example.programschemes.controller;
 
+import com.example.programschemes.dto.*;
+import com.example.programschemes.util.RomanNumeralUtil;
 import com.example.programschemes.model.*;
 import com.example.programschemes.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -142,6 +145,7 @@ public class TermController {
             // Calculate difference
             int diff = academicYearStarting - batchYearStarting;
             int semNo = diff * 2 + (termName.equalsIgnoreCase("Winter") ? 2 : 1);
+            String semRoman = RomanNumeralUtil.toRoman(semNo);
 
             // Fetch only CORE courses of that semNo from the scheme
             List<SemesterCourse> schemeCourses = schemeCourseRepository.findBySchemeIdAndSemNo(batch.getSchemeId(), semNo)
@@ -159,7 +163,7 @@ public class TermController {
             semester.setStrid(newSemId);
             semester.setStrbchid(batch.getBchid());
             semester.setStrtrmid(term.getTrmid());
-            semester.setStrname(batch.getBchname() + " - " + termName + " (" + semNo + ")");
+            semester.setStrname("Semester " + semRoman);
             semesterRepository.save(semester);
             totalSemesters++;
 
@@ -208,51 +212,69 @@ public class TermController {
     // LIST TERMS (DESC ORDER)
     @GetMapping("")
     public String listTerms(Model model) {
-        model.addAttribute("terms",
-                termRepository.findAll()
-                        .stream()
-                        .sorted((a, b) -> b.getTrmid().compareTo(a.getTrmid()))
-                        .toList()
-        );
+        List<Object[]> rows = termRepository.getAllTermsDetailsRaw();
+
+        List<TermViewDTO> terms = rows.stream()
+                .map(r -> new TermViewDTO(
+                        ((Number) r[0]).longValue(),
+                        (String) r[1],
+                        (String) r[2],
+                        (Date) r[3],
+                        (Date) r[4]
+                )).toList();
+
+        model.addAttribute("terms", terms);
         return "terms-list";
     }
 
     // LIST SEMESTERS (DESC ORDER)
     @GetMapping("/semesters")
     public String listSemesters(Model model) {
-        model.addAttribute("semesters",
-                semesterRepository.findAll()
-                        .stream()
-                        .sorted((a, b) -> b.getStrid().compareTo(a.getStrid()))
-                        .toList()
-        );
+        List<Object[]> rows = semesterRepository.getAllSemestersDetailsRaw();
+
+        List<SemesterViewDTO> semesters = rows.stream()
+                .map(r -> new SemesterViewDTO(
+                        ((Number) r[0]).longValue(),
+                        (String) r[1],
+                        (String) r[2],
+                        (String) r[3]
+                )).toList();
+
+        model.addAttribute("semesters", semesters);
         return "semesters-list"; // semesters.html
     }
 
     // LIST TERM COURSES (DESC ORDER BY termId, then courseCode)
     @GetMapping("/termcourses")
     public String listTermCourses(Model model) {
-        model.addAttribute("termcourses",
-                termCourseRepository.findAll()
-                        .stream()
-                        .sorted((a, b) -> {
-                            int cmp = b.getTcrid().compareTo(a.getTcrid());
-                            return cmp;
-                        })
-                        .toList()
-        );
+        List<Object[]> rows = termCourseRepository.getAllTermCoursesDetailsRaw();
+
+        List<TermCoursesViewDTO> termcourses = rows.stream()
+                .map(r -> new TermCoursesViewDTO(
+                        (String) r[0],
+                        (String) r[1],
+                        (String) r[2],
+                        (String) r[3]
+                )).toList();
+
+        model.addAttribute("termcourses", termcourses);
         return "termcourses-list"; // term_courses.html
     }
 
     @GetMapping("/semestercourses")
     public String listSemesterCourses(Model model) {
+        List<Object[]> rows = semesterCoursesRepository.getAllSemesterCoursesDetailsRaw();
 
-        // Get all semester courses sorted DESC by scrid
-        List<SemesterCourses> semesterCourses = semesterCoursesRepository
-                .findAll(Sort.by(Sort.Direction.DESC, "scrid"));
+        List<SemesterCoursesViewDTO> semesterCourses = rows.stream()
+                .map(r -> new SemesterCoursesViewDTO(
+                        (String) r[0],
+                        (String) r[1],
+                        (String) r[2],
+                        (String) r[3],
+                        (String) r[4]
+                )).toList();
 
         model.addAttribute("semesterCourses", semesterCourses);
-
         return "semestercourses-list";
     }
 }
